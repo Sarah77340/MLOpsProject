@@ -1,0 +1,18 @@
+# Ignorer les fichiers de données brutes
+data/
+/data/**/*
+!data/**/*.dvc
+
+# Environnement virtuel
+venv/
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Fichiers Jupyter checkpoint
+.ipynb_checkpoints/
+
+# Fichiers systèmes
+.DS_Store
