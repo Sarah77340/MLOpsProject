@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/0/433f0317d19943848603cdeded23337e/artifacts
+end_time: 1751657966367
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 433f0317d19943848603cdeded23337e
+run_name: nervous-bug-70
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1751657736872
+status: 3
+tags: []
+user_id: sarah

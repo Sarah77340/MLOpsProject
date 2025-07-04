@@ -1,0 +1,7 @@
+#mlflow
+fastapi
+uvicorn
+tensorflow
+opencv-python-headless
+pillow
+python-multipart

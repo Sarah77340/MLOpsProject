@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/0/744746f2fa79451bb085e0a7290de196/artifacts
+end_time: 1751657570790
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 744746f2fa79451bb085e0a7290de196
+run_name: loud-frog-363
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1751657344556
+status: 4
+tags: []
+user_id: sarah
