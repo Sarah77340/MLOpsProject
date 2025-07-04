@@ -1,7 +1,7 @@
 # Ignorer les fichiers de données brutes
 #data/
 #/data/**/*
-#!data/**/*.dvc
+!data/**/*.csv
 
 # Environnement virtuel
 venv/
