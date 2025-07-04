@@ -1,0 +1,20 @@
+artifact_path: file:///D:/DevopsMLopsCourse/Project/MLOpsProject/mlruns/493247449304854906/models/m-1af7bbbce5e14afdb75f5d400256783e/artifacts
+flavors:
+  keras:
+    data: data
+    keras_backend: tensorflow
+    keras_version: 3.9.2
+    save_exported_model: false
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.keras
+    python_version: 3.12.3
+mlflow_version: 3.1.1
+model_id: m-1af7bbbce5e14afdb75f5d400256783e
+model_size_bytes: 10107643
+model_uuid: m-1af7bbbce5e14afdb75f5d400256783e
+prompts: null
+run_id: 3c5564def9eb4caea28f14c67c377297
+utc_time_created: '2025-07-04 21:37:00.550170'

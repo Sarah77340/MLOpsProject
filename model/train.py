@@ -9,10 +9,16 @@ from tensorflow.keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 import mlflow
 import mlflow.tensorflow
+import mlflow.keras
+
+
+mlflow.set_experiment("emotion_detection")
 
 # Configuration
 DATA_PATH = "data/raw/fer2013.csv"
 MODEL_PATH = "model/emotion_model"
+#MODEL_NAME = "EmotionClassifier" 
+ARTIFACT_PATH = "emotion_model" 
 
 # Charger les données
 print("Chargement du dataset...")
@@ -44,13 +50,24 @@ model.summary()
 # Entraînement avec MLFlow
 print("Démarrage de l'entraînement avec MLFlow...")
 mlflow.tensorflow.autolog()
-with mlflow.start_run():
+with mlflow.start_run() as run:
     model.fit(X_train, y_train, epochs=10, batch_size=64, validation_split=0.1)
     test_loss, test_acc = model.evaluate(X_test, y_test)
     mlflow.log_metric("test_accuracy", test_acc)
 
     # Sauvegarde du modèle
-    print(f"Enregistrement du modèle dans {MODEL_PATH}...")
-    model.save(f"{MODEL_PATH}.keras")
+    #print(f"Enregistrement du modèle dans {MODEL_PATH}...")
+    #model.save(f"{MODEL_PATH}.keras")
+
+    # Sauvegarde avec Daghub
+    mlflow.keras.log_model(
+        model,
+        artifact_path=ARTIFACT_PATH
+    )
+
+    #print(f"Modele enregistré dans le registry sous le nom “{MODEL_NAME}”")
+    print(f"-> Tracking URI : {mlflow.get_tracking_uri()}")
+    print(f"-> Run ID : {run.info.run_id}")
+
 
 print("Entraînement terminé.")

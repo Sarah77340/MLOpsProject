@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/DevopsMLopsCourse/Project/MLOpsProject/mlruns/493247449304854906/3c5564def9eb4caea28f14c67c377297/artifacts
+end_time: 1751665032057
+entry_point_name: ''
+experiment_id: '493247449304854906'
+lifecycle_stage: active
+run_id: 3c5564def9eb4caea28f14c67c377297
+run_name: popular-gnat-149
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1751664797143
+status: 4
+tags: []
+user_id: sarah

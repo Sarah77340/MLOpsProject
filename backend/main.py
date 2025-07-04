@@ -7,12 +7,18 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
 import io
 from PIL import Image
+import mlflow.keras
 
 app = FastAPI()
 
+# Charger le modèle depuis MLflow (via run ID)
+run_id = "2019468f04bc4cb9ad71cb57f69970c9"
+model_uri = f"runs:/{run_id}/emotion_model"
+model = mlflow.keras.load_model(model_uri)
+
 # Charger le modèle
-MODEL_PATH = "../model/emotion_model.keras"
-model = load_model(MODEL_PATH)
+#MODEL_PATH = "../model/emotion_model.keras"
+#model = load_model(MODEL_PATH)
 
 # Labels FER2013
 emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']

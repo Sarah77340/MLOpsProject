@@ -1,0 +1,10 @@
+artifact_location: file:///D:/DevopsMLopsCourse/Project/MLOpsProject/mlruns/493247449304854906/models/m-faf0cf9bef8d48f7a85d9a995900b84e/artifacts
+creation_timestamp: 1751669014737
+experiment_id: '493247449304854906'
+last_updated_timestamp: 1751669026035
+model_id: m-faf0cf9bef8d48f7a85d9a995900b84e
+model_type: null
+name: emotion_model
+source_run_id: 2019468f04bc4cb9ad71cb57f69970c9
+status: 2
+status_message: null
