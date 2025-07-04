@@ -1,5 +1,5 @@
 # Ignorer les fichiers de données brutes
-data/
+#data/
 /data/**/*
 !data/**/*.dvc
 
