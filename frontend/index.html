@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Détection d'Émotions</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 2rem;
       text-align: center;
+      padding: 2rem;
     }
-    input[type="file"] {
-      margin: 1rem 0;
+    video, canvas {
+      margin-top: 1rem;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin: 1rem;
+      padding: 0.5rem 1rem;
     }
     #result {
       margin-top: 2rem;
@@ -19,45 +24,95 @@
 </head>
 <body>
   <h1>Détection d'Émotions</h1>
+
+  <!-- Upload d'image -->
   <form id="uploadForm">
     <input type="file" name="file" accept="image/*" required />
     <br />
-    <button type="submit">Analyser</button>
+    <button type="submit">Analyser une image</button>
   </form>
+
+  <hr />
+
+  <!-- Webcam -->
+  <video id="video" width="320" height="240" autoplay></video>
+  <br />
+  <button id="captureBtn">Analyser via Webcam</button>
+  <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
 
   <div id="result"></div>
 
   <script>
-    const form = document.getElementById('uploadForm');
+    const uploadForm = document.getElementById('uploadForm');
     const resultDiv = document.getElementById('result');
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const captureBtn = document.getElementById('captureBtn');
 
-    form.addEventListener('submit', async (e) => {
+    // Webcam init
+    if (navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {
+          video.srcObject = stream;
+        })
+        .catch((err) => {
+          console.error("Erreur d'accès caméra :", err);
+        });
+    }
+
+    // Envoi via formulaire
+    uploadForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const formData = new FormData(form);
+      const formData = new FormData(uploadForm);
       resultDiv.innerHTML = "Analyse en cours...";
 
       try {
-        const response = await fetch('http://localhost:8000/predict', {
+        const response = await fetch('/predict', {
           method: 'POST',
-          body: formData
+          body: formData,
         });
-
         const data = await response.json();
-
-        if (data.error) {
-          resultDiv.innerHTML = `<p style="color:red;">Erreur : ${data.error}</p>`;
-        } else if (data.predictions.length === 0) {
-          resultDiv.innerHTML = "Aucun visage détecté.";
-        } else {
-          resultDiv.innerHTML = "<h3>Résultats :</h3>";
-          data.predictions.forEach(pred => {
-            resultDiv.innerHTML += `<p><strong>${pred.emotion}</strong> (confiance : ${pred.confidence})</p>`;
-          });
-        }
+        afficherResultat(data);
       } catch (error) {
         resultDiv.innerHTML = `<p style="color:red;">Erreur : ${error.message}</p>`;
       }
     });
+
+    // Capture webcam
+    captureBtn.addEventListener('click', async () => {
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg'));
+
+      const formData = new FormData();
+      formData.append("file", blob, "webcam.jpg");
+
+      resultDiv.innerHTML = "Analyse en cours...";
+
+      try {
+        const response = await fetch('/predict', {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await response.json();
+        afficherResultat(data);
+      } catch (error) {
+        resultDiv.innerHTML = `<p style="color:red;">Erreur : ${error.message}</p>`;
+      }
+    });
+
+    // Affichage du résultat
+    function afficherResultat(data) {
+      if (data.error) {
+        resultDiv.innerHTML = `<p style="color:red;">Erreur : ${data.error}</p>`;
+      } else if (data.predictions.length === 0) {
+        resultDiv.innerHTML = "Aucun visage détecté.";
+      } else {
+        resultDiv.innerHTML = "<h3>Résultats :</h3>";
+        data.predictions.forEach(pred => {
+          resultDiv.innerHTML += `<p><strong>${pred.emotion}</strong> (confiance : ${pred.confidence})</p>`;
+        });
+      }
+    }
   </script>
 </body>
 </html>
