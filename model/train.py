@@ -10,9 +10,14 @@ from sklearn.model_selection import train_test_split
 import mlflow
 import mlflow.tensorflow
 import mlflow.keras
+import dagshub
+from mlflow.exceptions import MlflowException
 
+mlflow.set_tracking_uri("https://dagshub.com/Sarah77340/MLOpsProject.mlflow")
 
-mlflow.set_experiment("emotion_detection")
+# Tente de créer l'expérience si elle n'existe pas
+
+dagshub.init(repo_owner="Sarah77340", repo_name="MLOpsProject")
 
 # Configuration
 DATA_PATH = "data/raw/fer2013.csv"
@@ -51,7 +56,7 @@ model.summary()
 # Entraînement avec MLFlow
 print("Démarrage de l'entraînement avec MLFlow...")
 mlflow.tensorflow.autolog()
-with mlflow.start_run() as run:
+with mlflow.start_run(experiment_id="0") as run:
     model.fit(X_train, y_train, epochs=10, batch_size=64, validation_split=0.1)
     test_loss, test_acc = model.evaluate(X_test, y_test)
     mlflow.log_metric("test_accuracy", test_acc)
@@ -61,10 +66,11 @@ with mlflow.start_run() as run:
     #model.save(f"{MODEL_PATH}.keras")
 
     # Sauvegarde avec Daghub
-    mlflow.keras.log_model(
-        model,
-        artifact_path=ARTIFACT_PATH
-    )
+    #mlflow.keras.log_model(model,artifact_path=ARTIFACT_PATH)
+
+    model_output_path = os.path.join("outputs", ARTIFACT_PATH)
+    mlflow.keras.save_model(model, model_output_path)
+    mlflow.log_artifacts(model_output_path, artifact_path="model")
 
     #print(f"Modele enregistré dans le registry sous le nom “{MODEL_NAME}”")
     print(f"-> Tracking URI : {mlflow.get_tracking_uri()}")

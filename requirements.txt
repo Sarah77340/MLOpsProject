@@ -1,4 +1,4 @@
-#mlflow
+mlflow
 fastapi
 uvicorn
 tensorflow
@@ -7,3 +7,5 @@ pillow
 python-multipart
 dagshub
 tensorflow
+pytest
+httpx

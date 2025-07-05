@@ -8,28 +8,13 @@ from tensorflow.keras.preprocessing.image import img_to_array
 import io
 from PIL import Image
 import mlflow.keras
-import mlflow
-#from mlflow.keras import load_model
-from tensorflow.keras.models import load_model
-import os
-
-# Connexion à DagsHub (MLflow Tracking)
-#os.environ["MLFLOW_TRACKING_URI"] = "https://dagshub.com/Sarah77340/MLOpsProject.mlflow"
-#mlflow.set_tracking_uri(os.environ["MLFLOW_TRACKING_URI"])
-
-# Charger le modèle depuis DagsHub avec son run ID
-#run_id = "TON_RUN_ID_DAGSHUB"
-#model_uri = f"runs:/{run_id}/emotion_model"
-#model = load_model(model_uri)
 
 app = FastAPI()
 
 # Charger le modèle depuis MLflow
-#run_id = "2019468f04bc4cb9ad71cb57f69970c9"
-#model_uri = f"runs:/{run_id}/emotion_model"
-#model = mlflow.keras.load_model(model_uri)
-
-model = load_model("model/emotion_model.keras")
+run_id = "2019468f04bc4cb9ad71cb57f69970c9"
+model_uri = f"runs:/{run_id}/emotion_model"
+model = mlflow.keras.load_model(model_uri)
 
 # Labels FER2013
 emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
