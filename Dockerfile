@@ -14,6 +14,7 @@ COPY backend ./backend
 COPY model ./model
 COPY data ./data
 COPY mlruns ./mlruns
+COPY frontend ./frontend
 
 # Expose le port de l’API
 EXPOSE 8000
