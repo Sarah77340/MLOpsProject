@@ -1,12 +1,13 @@
-import requests
+import pytest
+from fastapi.testclient import TestClient
+from backend.main import app
 
-# API URL
-url = "http://localhost:8000/predict"
+client = TestClient(app)
 
-# Fichier image de test
-with open("tests/test_image.jpg", "rb") as f:
-    files = {'file': f}
-    response = requests.post(url, files=files)
-
-print("Status Code:", response.status_code)
-print("Response:", response.json())
+def test_predict_valid_image():
+    with open("tests/test_image.jpg", "rb") as f:
+        response = client.post("/predict", files={"file": ("test_image.jpg", f, "image/jpeg")})
+    assert response.status_code == 200
+    data = response.json()
+    assert "predictions" in data
+    assert isinstance(data["predictions"], list)
