@@ -3,6 +3,7 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 import numpy as np
 import cv2
+from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
 import io
 from PIL import Image
@@ -10,15 +11,19 @@ import mlflow.keras
 
 app = FastAPI()
 
-# Charger le modèle depuis MLflow
+# Charger le modèle depuis MLflow (via run ID)
 run_id = "2019468f04bc4cb9ad71cb57f69970c9"
 model_uri = f"runs:/{run_id}/emotion_model"
 model = mlflow.keras.load_model(model_uri)
 
+# Charger le modèle
+#MODEL_PATH = "../model/emotion_model.keras"
+#model = load_model(MODEL_PATH)
+
 # Labels FER2013
 emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
-# Classifieur Haar pour détection de visages
+# Classifieur de visage OpenCV (Haar Cascade)
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 
@@ -34,16 +39,12 @@ async def predict_emotion(file: UploadFile = File(...)):
 
         predictions = []
 
-        if len(faces) == 0:
-            return JSONResponse(content={"predictions": [], "message": "Aucun visage détecté."})
-
         for (x, y, w, h) in faces:
             roi_gray = gray[y:y+h, x:x+w]
             roi_resized = cv2.resize(roi_gray, (48, 48))
             roi_normalized = roi_resized.astype("float") / 255.0
-            roi_normalized = np.reshape(roi_normalized, (48, 48, 1))  # Pour avoir la bonne forme
-            roi_array = img_to_array(roi_normalized)
-            roi_expanded = np.expand_dims(roi_array, axis=0)
+            roi_reshaped = img_to_array(roi_normalized)
+            roi_expanded = np.expand_dims(roi_reshaped, axis=0)
 
             preds = model.predict(roi_expanded, verbose=0)
             emotion_index = np.argmax(preds)

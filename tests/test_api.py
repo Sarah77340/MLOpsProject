@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from backend.main import app
+from backend.main0 import app
 
 client = TestClient(app)
 
@@ -9,5 +9,6 @@ def test_predict_valid_image():
         response = client.post("/predict", files={"file": ("test_image.jpg", f, "image/jpeg")})
     assert response.status_code == 200
     data = response.json()
+    print("JSON response : ", data)
     assert "predictions" in data
     assert isinstance(data["predictions"], list)
