@@ -20,6 +20,7 @@ MODEL_PATH = "model/emotion_model"
 #MODEL_NAME = "EmotionClassifier" 
 ARTIFACT_PATH = "emotion_model" 
 
+#updated
 # Charger les données
 print("Chargement du dataset...")
 df = pd.read_csv(DATA_PATH)
