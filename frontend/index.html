@@ -7,19 +7,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet" />
 </head>
 <body>
-
   <header>
-    <div id="header-left">
-      <img src="/static/assets/logo.png" alt="Logo de l'application" class="logo">
-      <h1 id="site-name">Détection d'Émotions</h1>      
+    <div id="header-top">
+      <div id="header-left">
+        <img src="/static/assets/logo.png" alt="Logo de l'application" class="logo">
+        <h1 id="site-name">Détection d'Émotions</h1>      
+      </div>
     </div>
+    <nav id="tabs">
+      <button class="tab-btn active" data-tab="upload">📁 Fichier</button>
+      <button class="tab-btn" data-tab="webcam">📸 Webcam</button>
+      <button class="tab-btn" data-tab="url">🌐 URL</button>
+    </nav>
   </header>
-
-  <nav id="tabs">
-    <button class="tab-btn active" data-tab="upload">📁 Fichier</button>
-    <button class="tab-btn" data-tab="webcam">📸 Webcam</button>
-    <button class="tab-btn" data-tab="url">🌐 URL</button>
-  </nav>
 
   <main>
     <div id="upload" class="tab-content active">

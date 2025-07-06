@@ -16,18 +16,22 @@ html, body {
 
 header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 30px;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 0 0 30px;
   background-color: #f0f4f8;
   border-bottom: 2px solid #d0d7de;
 }
+
 
 /* Partie gauche du header */
 #header-left {
   display: flex;
   align-items: center;
+  gap: 12px;
+  margin-bottom: 0.5rem;
 }
+
 
 #site-logo {
   height: 40px;
@@ -44,11 +48,11 @@ header {
 
 #tabs {
   display: flex;
-  justify-content: center;
-  background: #DEE7EC;
   gap: 0.5em;
-
+  background: transparent;
+  justify-content: flex-start;
 }
+
 
 #tabs .tab-btn {
   border: none;
@@ -69,6 +73,7 @@ header {
   border-top: 2px solid #3498db;
   border-left: 2px solid #3498db;
   border-right: 2px solid #3498db;
+  border-bottom: none;
   color: #3498db;
   font-weight: 600;
   z-index: 10;
@@ -79,21 +84,7 @@ header {
   background-color: #a3c5e7;
 }
 
-/* Ajout d’un petit "triangle" dessous l’onglet actif (comme un onglet de dossier) */
-#tabs .tab-btn.active::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 30px;
-  height: 10px;
-  background-color: #f0f4f8; /* même que le bg actif */
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-  border-top: 10px solid #f0f4f8;
-  z-index: -1;
-}
+
 
 form, video, canvas, input, button {
   margin: 1rem 0;
@@ -136,7 +127,6 @@ footer {
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  border-radius: 0 0 1rem 1rem;
 }
 
 h1, h2 {
