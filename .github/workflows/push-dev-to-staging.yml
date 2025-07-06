@@ -18,9 +18,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Push code to staging branch
+      - name: Merge dev into staging
         run: |
           git fetch origin
-          git checkout -B staging
-          git merge dev --no-edit
-          git push origin staging
+          git checkout -B staging origin/staging || git checkout -b staging
+          git merge origin/dev --no-edit
+
+      - name: Push to staging
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          branch: staging
