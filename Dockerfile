@@ -20,4 +20,4 @@ COPY frontend ./frontend
 EXPOSE 8000
 
 # Commande pour lancer FastAPI
-CMD ["uvicorn", "backend.main2:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
