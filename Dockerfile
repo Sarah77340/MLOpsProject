@@ -12,8 +12,8 @@ RUN pip install --upgrade pip \
 # Copie tout le code de l'application
 COPY backend ./backend
 COPY model ./model
-COPY data ./data
-COPY mlruns ./mlruns
+#COPY data ./data
+#COPY mlruns ./mlruns
 COPY frontend ./frontend
 
 # Expose le port de l’API
