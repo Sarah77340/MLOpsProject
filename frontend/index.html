@@ -3,116 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <title>Détection d'Émotions</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 2rem;
-    }
-    video, canvas {
-      margin-top: 1rem;
-      border: 1px solid #ccc;
-    }
-    button {
-      margin: 1rem;
-      padding: 0.5rem 1rem;
-    }
-    #result {
-      margin-top: 2rem;
-    }
-  </style>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <h1>Détection d'Émotions</h1>
 
-  <!-- Upload d'image -->
-  <form id="uploadForm">
-    <input type="file" name="file" accept="image/*" required />
-    <br />
-    <button type="submit">Analyser une image</button>
-  </form>
+  <header>
+    <div id="header-left">
+      <img src="/static/assets/logo.png" alt="Logo de l'application" class="logo">
+      <h1 id="site-name">Détection d'Émotions</h1>      
+    </div>
+  </header>
 
-  <hr />
+  <nav id="tabs">
+    <button class="tab-btn active" data-tab="upload">📁 Fichier</button>
+    <button class="tab-btn" data-tab="webcam">📸 Webcam</button>
+    <button class="tab-btn" data-tab="url">🌐 URL</button>
+  </nav>
 
-  <!-- Webcam -->
-  <video id="video" width="320" height="240" autoplay></video>
-  <br />
-  <button id="captureBtn">Analyser via Webcam</button>
-  <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
+  <main>
+    <div id="upload" class="tab-content active">
+      <h2>Importer une image</h2>
+      <form id="uploadForm">
+        <input type="file" id="fileInput" name="file" accept="image/*" required />
+        <label for="fileInput" class="custom-file-label">Choisir une image</label>
+        <div id="preview"></div>
+        <button type="submit">Analyser l'image</button>
+      </form>
+    </div>
 
-  <div id="result"></div>
+    <div id="webcam" class="tab-content">
+      <h2>Webcam</h2>
+      <video id="video" width="320" height="240" autoplay></video>
+      <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
+      <br/>
+      <button id="captureBtn">Analyser via Webcam</button>
+    </div>
 
-  <script>
-    const uploadForm = document.getElementById('uploadForm');
-    const resultDiv = document.getElementById('result');
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const captureBtn = document.getElementById('captureBtn');
+    <div id="url" class="tab-content">
+      <h2>Via une URL</h2>
+      <input type="text" id="imageUrl" placeholder="Entrer l'URL de l'image" />
+      <button id="analyzeUrlBtn">Analyser l'image</button>
+      <div id="urlPreview"></div>
+    </div>
 
-    // Webcam init
-    if (navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then((stream) => {
-          video.srcObject = stream;
-        })
-        .catch((err) => {
-          console.error("Erreur d'accès caméra :", err);
-        });
-    }
+    <div id="google" class="tab-content">
+      <h2>Recherche Google Image</h2>
+      <p>Fonctionnalité à intégrer 🔧</p>
+    </div>
 
-    // Envoi via formulaire
-    uploadForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(uploadForm);
-      resultDiv.innerHTML = "Analyse en cours...";
+    <div id="result"></div>
+  </main>
 
-      try {
-        const response = await fetch('/predict', {
-          method: 'POST',
-          body: formData,
-        });
-        const data = await response.json();
-        afficherResultat(data);
-      } catch (error) {
-        resultDiv.innerHTML = `<p style="color:red;">Erreur : ${error.message}</p>`;
-      }
-    });
+  <footer>
+    <p>© 2025 Projet DevOps & MLOps | Détection d'Émotions</p>
+  </footer>
 
-    // Capture webcam
-    captureBtn.addEventListener('click', async () => {
-      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg'));
-
-      const formData = new FormData();
-      formData.append("file", blob, "webcam.jpg");
-
-      resultDiv.innerHTML = "Analyse en cours...";
-
-      try {
-        const response = await fetch('/predict', {
-          method: 'POST',
-          body: formData,
-        });
-        const data = await response.json();
-        afficherResultat(data);
-      } catch (error) {
-        resultDiv.innerHTML = `<p style="color:red;">Erreur : ${error.message}</p>`;
-      }
-    });
-
-    // Affichage du résultat
-    function afficherResultat(data) {
-      if (data.error) {
-        resultDiv.innerHTML = `<p style="color:red;">Erreur : ${data.error}</p>`;
-      } else if (data.predictions.length === 0) {
-        resultDiv.innerHTML = "Aucun visage détecté.";
-      } else {
-        resultDiv.innerHTML = "<h3>Résultats :</h3>";
-        data.predictions.forEach(pred => {
-          resultDiv.innerHTML += `<p><strong>${pred.emotion}</strong> (confiance : ${pred.confidence})</p>`;
-        });
-      }
-    }
-  </script>
+  <script src="/static/script.js"></script>
 </body>
 </html>

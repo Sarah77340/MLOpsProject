@@ -27,6 +27,14 @@ from fastapi.responses import FileResponse
 
 app = FastAPI()
 
+# Sert le frontend statique
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+@app.get("/")
+def read_index():
+    return FileResponse("frontend/index.html")
+
+
 # Charger le modèle depuis MLflow
 #run_id = "2019468f04bc4cb9ad71cb57f69970c9"
 #model_uri = f"runs:/{run_id}/emotion_model"
@@ -83,10 +91,3 @@ async def predict_emotion(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
-
-    # Sert le frontend statique
-    app.mount("/static", StaticFiles(directory="frontend"), name="static")
-
-    @app.get("/")
-    def read_index():
-        return FileResponse("frontend/index.html")
