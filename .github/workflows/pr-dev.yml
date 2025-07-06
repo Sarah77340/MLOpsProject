@@ -27,12 +27,6 @@ jobs:
           pip install -r requirements.txt
           pip install dvc[all] mlflow
 
-      - name: Pull DVC data (if needed)
-        run: dvc pull
-        env:
-          GIT_SSL_NO_VERIFY: 1
-          DVC_AUTH: ${{ secrets.DAGSHUB_TOKEN }}
-
       - name: Build app (optional Docker or basic test)
         run: |
           echo "Simulating build step..."
