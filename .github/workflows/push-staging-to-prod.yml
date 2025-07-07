@@ -1,65 +1,67 @@
+# .github/workflows/from-staging-to-production.yml
 name: From Staging to Production
 
 on:
   push:
-    branches:
-      - staging
+    branches: [staging]
 
 jobs:
   test-and-promote:
     runs-on: ubuntu-latest
 
     env:
-      MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
-      DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
-      DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      # --- Secrets pour tests et Docker ---------------------------------
+      MLFLOW_TRACKING_URI : ${{ secrets.MLFLOW_TRACKING_URI }}
+      DAGSHUB_USERNAME     : ${{ secrets.DAGSHUB_USERNAME }}
+      DAGSHUB_TOKEN        : ${{ secrets.DAGSHUB_TOKEN }}
+      DOCKERHUB_USERNAME   : ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN      : ${{ secrets.DOCKERHUB_TOKEN }}
+      PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    # 1) Récupérer le code ------------------------------------------------
+    - name: Checkout
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+    # 2) Environnement Python + dépendances ------------------------------
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install dvc[all] mlflow
+    - name: Install project dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install dvc[all] mlflow pytest
 
-      - name: Build Docker Image
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/mlops-app:test .
-      
-      - name: Set PYTHONPATH
-        run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)" >> $GITHUB_ENV
+    # 3) Rendre backend importable par pytest ----------------------------
+    - name: Set PYTHONPATH
+      run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
 
-      - name: Run unit tests
-        run: |
-          echo "Running unit tests..."
-          pytest tests/unit
+    # 4) Tests (fail = stop du job) --------------------------------------
+    - name: Run unit tests
+      run: pytest tests/unit
 
-      - name: Run integration tests
-        run: |
-          echo "Running integration tests..."
-          pytest tests/integration
+    - name: Run integration tests
+      run: pytest tests/integration
 
-      - name: Run end-to-end tests
-        run: |
-          echo "Running end-to-end tests..."
-          pytest tests/e2e
+    - name: Run end-to-end tests
+      run: pytest tests/e2e
 
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+    # 5) Build + push Docker image ---------------------------------------
+    - name: Log in to DockerHub
+      run: echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
-      - name: Force push staging to main
-        run: |
-          git remote set-url origin https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/Sarah77340/MLOpsProject.git
-          git fetch origin
-          git checkout staging
-          git push origin staging:main --force
+    - name: Build image
+      run: docker build -t $DOCKERHUB_USERNAME/mlops-app:latest .
+
+    - name: Push image
+      run: docker push $DOCKERHUB_USERNAME/mlops-app:latest
+
+    # 6) Promote code : force-push staging → main ------------------------
+    - name: Force-push staging to main
+      run: |
+        git remote set-url origin https://x-access-token:${PERSONAL_ACCESS_TOKEN}@github.com/Sarah77340/MLOpsProject.git
+        git fetch origin
+        git checkout staging
+        git push origin staging:main --force
