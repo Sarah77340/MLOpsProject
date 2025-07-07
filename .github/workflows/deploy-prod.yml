@@ -26,10 +26,10 @@ jobs:
       - name: Push Docker image to DockerHub
         run: docker push $DOCKERHUB_USERNAME/mlops-app:latest
 
-      - name: Install Railway CLI
-        run: curl -fsSL https://railway.app/install.sh | sh
+      #- name: Install Railway CLI
+      #  run: curl -fsSL https://railway.app/install.sh | sh
 
-      - name: Deploy to Railway
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up
+      #- name: Deploy to Railway
+      #  env:
+      #    RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      #  run: railway up
