@@ -61,7 +61,7 @@ jobs:
     # 6) Promote code : force-push staging → main ------------------------
     - name: Force-push staging to main
       run: |
-        git remote set-url origin https://x-access-token:${PERSONAL_ACCESS_TOKEN}@github.com/Sarah77340/MLOpsProject.git
+        git remote set-url origin https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/Sarah77340/MLOpsProject.git
         git fetch origin
         git checkout staging
         git push origin staging:main --force
