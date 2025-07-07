@@ -1,0 +1,62 @@
+name: From Staging to Production
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  test-and-promote:
+    runs-on: ubuntu-latest
+
+    env:
+      MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
+      DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install dvc[all] mlflow
+
+      - name: Build app
+        run: |
+          echo "Building app..."
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/mlops-app:test .
+
+      - name: Run unit tests
+        run: |
+          echo "Running unit tests..."
+          pytest tests/unit
+
+      - name: Run integration tests
+        run: |
+          echo "Running integration tests..."
+          pytest tests/integration
+
+      - name: Run end-to-end tests
+        run: |
+          echo "Running end-to-end tests..."
+          pytest tests/e2e
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Push to main
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          branch: main
