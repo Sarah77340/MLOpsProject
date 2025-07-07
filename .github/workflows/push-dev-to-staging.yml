@@ -18,15 +18,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Merge dev into staging
+      - name: Force push dev to staging
         run: |
+          git remote set-url origin https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/Sarah77340/MLOpsProject.git
           git fetch origin
-          git checkout -B staging origin/staging || git checkout -b staging
-          git merge origin/dev --no-edit --allow-unrelated-histories
-
-      - name: Push to staging
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          branch: staging
-          force: true
+          git checkout dev
+          git push origin dev:staging --force
