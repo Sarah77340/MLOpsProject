@@ -22,6 +22,8 @@ jobs:
     # 1) Récupérer le code ------------------------------------------------
     - name: Checkout
       uses: actions/checkout@v3
+      with:
+          persist-credentials: false
 
     # 2) Environnement Python + dépendances ------------------------------
     - name: Set up Python
